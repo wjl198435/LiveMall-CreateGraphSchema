@@ -1,0 +1,15 @@
+hosts: [localhost]
+port: 8182
+
+connectionPool.maxInProcessPerConnection: 30
+connectionPool.maxSimultaneousUsagePerConnection: 50
+
+connectionPool.maxSize: 200
+connectionPool.minSize: 10
+
+nioPoolSize: 4
+workerPoolSize: 8
+
+
+
+serializer: { className: org.apache.tinkerpop.GremlinWithRemote.driver.ser.GryoMessageSerializerV1d0, config: { ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistry] }}

@@ -1,0 +1,21 @@
+graph.tx().rollback()
+
+// Create an index
+m = graph.openManagement()
+openIds=m.buildIndex('openIds', Vertex.class).addKey(m.getPropertyKey('openId')).buildCompositeIndex()
+openIds.unique
+//m.setConsistency(openIds, ConsistencyModifier.LOCK);
+m.commit()
+graph.tx().commit()
+
+// Block until the SchemaStatus transitions from INSTALLED to REGISTERED
+m.awaitGraphIndexStatus(graph, 'openIds').status(SchemaStatus.REGISTERED).call()
+
+// Reindex using JanusGraphManagement
+m = graph.openManagement()
+i = m.getGraphIndex('openIds')
+m.updateIndex(i, SchemaAction.REINDEX)
+m.commit()
+
+// Enable the index
+m.awaitGraphIndexStatus(graph, 'openIds').status(SchemaStatus.ENABLED).call()
